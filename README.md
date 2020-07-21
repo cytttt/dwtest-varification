@@ -17,7 +17,7 @@ For rho not equal to 0:
 
     - For right-tail and two-tail test:
     
-        We calculate Type I error rate
+        We calculate Type II error rate
         
     - For left-tail test:
     
