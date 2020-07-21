@@ -7,7 +7,8 @@
     Verify the correctnes and  compare the power of dwtest in R and in Python
     ref: https://github.com/dima-quant/dwtest
     hackMD: https://hackmd.io/FykfBMo8RkKg7_ySSRnipw?view
-    
+## Guildline
+Put all .py, .ipynb, .Rmd in same level of directory
 ## error rate comparison
 For rho equal to 0:
 
