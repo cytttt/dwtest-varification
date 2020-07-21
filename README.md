@@ -8,7 +8,8 @@
     ref: https://github.com/dima-quant/dwtest
     hackMD: https://hackmd.io/FykfBMo8RkKg7_ySSRnipw?view
 ## Guildline
-Put all .py, .ipynb, .Rmd in same level of directory
+Put all .py, .ipynb, .Rmd in same level of directory:
+
     - First, you can either use generating_csv.py or allprocess.ipynb to generate .csvs.
     - Second, you can use varification.py or allprocess.ipynb to conduct dwtest in python.
     - Third, you can use testdwtest.Rmd to conduct dwtest in python
