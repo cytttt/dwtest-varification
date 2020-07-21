@@ -12,6 +12,7 @@ test_dwtest <- function(n,k,rho,iterations, maxfile = 100, platform = c("Unix","
   pvals_r <- rep()
   pvals_t <- rep()
   pvals_l <- rep()
+  timerecord <- rep()
   nd = 0
   s = '/'
   if (iterations%%maxfile != 0){
@@ -41,16 +42,23 @@ test_dwtest <- function(n,k,rho,iterations, maxfile = 100, platform = c("Unix","
     if(i ==nd-1 && iterations%%maxfile != 0)
       for(j in c(0:(iterations%%maxfile-1))){
         df <- read.csv(paste( paste(ns,as.character(i+1),sep = "_"), paste("_",as.character(j+1+maxfile*i),sep = ""), ".csv",sep = ""))
+        start.time <- Sys.time()
         pvals_r[j+1+maxfile*i] <- dwtest(as.formula(formulas),data=df,alternative = "greater")[4]
         pvals_t[j+1+maxfile*i] <- dwtest(as.formula(formulas),data=df,alternative = "two.sided")[4]
         pvals_l[j+1+maxfile*i] <- dwtest(as.formula(formulas),data=df,alternative = "less")[4]
+        end.time <- Sys.time()
+        timerecord[j+1+maxfile*i] <- end.time - start.time
+        
       }
     else
       for(j in c(0:(maxfile-1))){
         df <- read.csv(paste( paste(ns,as.character(i+1),sep = "_"), paste("_",as.character(j+1+maxfile*i),sep = ""), ".csv",sep = ""))
+        start.time <- Sys.time()
         pvals_r[j+1+maxfile*i] <- dwtest(as.formula(formulas),data=df,alternative = "greater")[4]
         pvals_t[j+1+maxfile*i] <- dwtest(as.formula(formulas),data=df,alternative = "two.sided")[4]
         pvals_l[j+1+maxfile*i] <- dwtest(as.formula(formulas),data=df,alternative = "less")[4]
+        end.time <- Sys.time()
+        timerecord[j+1+maxfile*i] <- end.time - start.time
       }
     setwd( paste("..",s,sep = "") )
   }
@@ -59,12 +67,13 @@ test_dwtest <- function(n,k,rho,iterations, maxfile = 100, platform = c("Unix","
   # -------------------
   setwd("rresult_ds1")
   dftmp <- do.call(rbind,Map(data.frame, right = pvals_r, twotail = pvals_t, left = pvals_l))
-  #write.csv(dftmp,paste(paste("r","pval",ns,sep = "_"),".csv",sep =""), row.names = FALSE)
   write.csv(dftmp,paste(paste("r",paste("pval",ns,sep = ""),sep = "_"),".csv",sep =""), row.names = FALSE)
   setwd(paste("..",s,sep = ""))
   # ------------------
+  return (timerecord)
 }
 ```
+
 
 
 ```{r}
@@ -76,7 +85,9 @@ it <- 5000
 ```
 
 ```{r}
+# output .csv(test tesult)
 pnlist <- c(10,20,50,100,200,500,1000)
+timerecord = rep()
 for(i in pnlist){
   for(j in klist){
     if(i == j)
@@ -88,68 +99,22 @@ for(i in pnlist){
 }
 ```
 
+
+
 ```{r}
-for(j in klist){
-  if(j == 10)
-    next
-  for(k in rholist){
-    test_dwtest(10,j,k,it)
+# test the execution time
+pnlist <- c(100,200,500,1000)
+mtr = rep()
+count = 1
+for(i in pnlist){
+  for(j in klist){
+    for(k in rholist){
+      tr <- test_dwtest(i,j,k,it)
+      mtr[count] <- mean(tr)
+      count <- count +1
+    }
   }
 }
-```
-
-```{r}
-for(j in klist){
-  for(k in rholist){
-    test_dwtest(20,j,k,it)
-  }
-}
-```
-
-```{r}
-for(j in klist){
-  for(k in rholist){
-    test_dwtest(50,j,k,it)
-  }
-}
-```
-
-```{r}
-for(j in klist){
-  for(k in rholist){
-    test_dwtest(100,j,k,it)
-  }
-}
-```
-
-```{r}
-for(j in klist){
-  for(k in rholist){
-    test_dwtest(200,j,k,it)
-  }
-}
-```
-
-```{r}
-for(j in klist){
-  for(k in rholist){
-    test_dwtest(500,j,k,it)
-  }
-}
-```
-
-```{r}
-for(j in klist){
-  for(k in rholist){
-    test_dwtest(1000,j,k,it)
-  }
-}
-```
-
-
-
-```{r}
-dftest <- read.csv("test_ds/10_1_0/10_1_0_1/10_1_0_1_8.csv")
-print(dwtest(y ~ x1,data=dftest,alternative = "greater")[4])
-
+dftmp <- do.call(rbind,Map(data.frame, mean = mtr))
+write.csv(dftmp,"meantime_r.csv", row.names = FALSE)
 ```
