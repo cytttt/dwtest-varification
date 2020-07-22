@@ -7,6 +7,8 @@
     Verify the correctnes and  compare the power of dwtest in R and in Python
     ref: https://github.com/dima-quant/dwtest
     hackMD: https://hackmd.io/FykfBMo8RkKg7_ySSRnipw?view
+## Warning
+Please remove the prefix in front of function dwtest_pan e.g. #@jit(nopython=True, parallel=False), or this dwtest will fail at some of .csv
 ## Guildline
 Put all .py, .ipynb, .Rmd in same level of directory:
 
